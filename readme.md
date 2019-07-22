@@ -15,7 +15,7 @@
 * `service` method is invoked.
 * `destroy` method is invoked.
 
-load -> instantiate -> init -> service -> destroy
+```load -> instantiate -> init -> service -> destroy```
 
 ### Ways to create Servlet
 * By implementing Servlet interface
@@ -36,5 +36,25 @@ load -> instantiate -> init -> service -> destroy
   - HttpSessionAttributeListener
   - HttpSessionBindingListener
   - HttpSessionActivationListener
+
+
+### Request LifeCycle
+* Client / Caller - generates request
+* Container receives the request and spawns thread
+* Invokes Request Listener chain `requestInitialized(req_event)`
+* Invokes Filter chain `doFilter(req, resp)`
+* Invokes Session Listener chain `sessionCreated(event)`
+* Invokes Servlet `doGet(req, resp)`
+* Invokes Session Listener chain `sessionDestroyed(event)`
+* Invokes Filter chain `doFilter(req, resp)`
+* Invokes Request Listener chain `requestInitialized(req_event)`
+* Container receives the response and closes thread
+* Client / Caller - gets response
+
+```
+client -> |-----------| -> listener -> filter -> listener -> |---------| 
+          | container |                                      | servlet | service()
+client <- |-----------| <- listener <- filter <- listener <- |---------|
+```
 
 [https://www.javatpoint.com/servlet-tutorial]
